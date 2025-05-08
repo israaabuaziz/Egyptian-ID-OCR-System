@@ -21,7 +21,7 @@ An advanced OCR system for extracting information from Egyptian national ID card
 ### Setup
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/egyptian-id-ocr-api.git
+git clone https://github.com/israaabuaziz/egyptian-id-ocr-api.git
 cd egyptian-id-ocr-api
 
 # Create virtual environment
