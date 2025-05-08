@@ -15,14 +15,12 @@ from id import extract_id_info
 from waitress import serve  
 import logging
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 
-# Initialize EasyOCR
 try:
     easyocr_reader = easyocr.Reader(['ar'])
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -30,7 +28,6 @@ except Exception as e:
     logger.error(f"OCR initialization failed: {str(e)}")
     raise
 
-# Load models
 try:
     egyptian_id_model_path = r'F:\OCR\detection model\YOLOv8\egy_id_new.pt'
     arabic_numbers_model_path = r'F:\OCR\detection model\YOLOv8\arabic_numbers.pt'
@@ -96,7 +93,6 @@ def process_id():
     if 'image' not in request.files:
         return jsonify({'error': 'No image provided'}), 400
     
-    # Save uploaded file
     image_file = request.files['image']
     filename = werkzeug.utils.secure_filename(image_file.filename)
     uploads_dir = os.path.join(os.getcwd(), 'uploads')
@@ -107,7 +103,6 @@ def process_id():
         image_file.save(temp_path)
         clear_previous_predictions()
         
-        # Detect and crop ID fields
         egyptian_id_model(
             temp_path,
             save=True,
@@ -117,7 +112,6 @@ def process_id():
             save_crop=True
         )
         
-        # Process crops
         crops_folder = os.path.join('runs', 'detect')
         skip_fields = {"pic", "egyptian-id", "national_id", "manfucturing_id"}
         
@@ -134,7 +128,6 @@ def process_id():
         extracted_info = {}
         national_id_number = None
 
-        # Process national ID if found
         national_id_crop = os.path.join(crops_path, 'National_ID')
         if os.path.exists(national_id_crop):
             national_images = glob.glob(os.path.join(national_id_crop, '*.jpg'))
@@ -143,7 +136,6 @@ def process_id():
                 if national_id_number:
                     extracted_info['national_id'] = national_id_number
 
-        # Process other fields
         if os.path.exists(crops_path):
             for field_folder in os.listdir(crops_path):
                 if field_folder.lower() in skip_fields:
@@ -155,13 +147,11 @@ def process_id():
                         text = extract_text_from_image(image_path, field_folder)
                         extracted_info[field_folder] = text
 
-        # Add additional ID info if available
         if national_id_number:
             id_info = extract_id_info(national_id_number)
             if id_info:
                 extracted_info.update(id_info)
 
-        # Create proper JSON response with Arabic characters
         response = Response(
             response=json.dumps(extracted_info, ensure_ascii=False),
             status=200,
@@ -175,7 +165,6 @@ def process_id():
         return jsonify({'error': str(e)}), 500
         
     finally:
-        # Cleanup resources
         try:
             if os.path.exists(temp_path):
                 os.remove(temp_path)
@@ -185,7 +174,6 @@ def process_id():
             logger.warning(f"Cleanup error: {str(e)}")
 
 if __name__ == '__main__':
-    # Run with production server for Windows
     if os.getenv('FLASK_ENV') == 'development':
         app.run(host='0.0.0.0', port=5000, debug=True)
     else:
