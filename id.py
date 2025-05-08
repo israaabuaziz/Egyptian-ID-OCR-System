@@ -10,7 +10,7 @@ def get_gender(gender_digit):
     return "Female" if int(gender_digit) % 2 == 0 and int(gender_digit) != 6 else "Male"
 
 
-def extract_id_info(national_id):  # sourcery skip: extract-method
+def extract_id_info(national_id):  
     number_mapping = {
         '01': "القاهرة",
         '02': "اسكندرية",
@@ -50,7 +50,7 @@ def extract_id_info(national_id):  # sourcery skip: extract-method
         temp_born = national_id[7:9]
         place_of_birth = number_mapping.get(temp_born, "Unknown")
         gender = national_id[12]
-        verify_id = national_id[13]
+        # verify_id = national_id[13]
 
         birth_date = get_birth_date(century, day, month, year_born)
         gender_str = get_gender(gender)
