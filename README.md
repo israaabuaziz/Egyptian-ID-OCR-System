@@ -7,6 +7,12 @@
 
 An advanced OCR system for extracting information from Egyptian national ID cards and criminal record documents, with Arabic/English text recognition capabilities.
 
+##Results 
+<img width="593" height="188" alt="image" src="https://github.com/user-attachments/assets/2e2a3cb1-545f-4024-8b75-e39f17a069b3" />
+<img width="604" height="257" alt="image" src="https://github.com/user-attachments/assets/e016286c-672f-493f-bf69-b923e8794803" />
+<img width="233" height="62" alt="image" src="https://github.com/user-attachments/assets/e929ff60-f171-4d25-8bde-a90f8407cf54" />
+
+
 ## Features
 - 🪪 Automatic ID field detection with YOLOv8
 - 🔢 Arabic numeral recognition and conversion
